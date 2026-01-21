@@ -11,12 +11,12 @@
 <body>
   <a-scene fog="type: linear; color: #000000; far: 10; near: 0.1">
     <!-- Lighting -->
-    <a-light type="ambient" color="#333333" intensity="0.4"></a-light>
+    <a-light type="ambient" color="#555555" intensity="0.6"></a-light>
     <a-light type="directional" color="#666666" intensity="0.5" position="5 3 5"></a-light>
     <a-light type="spot" color="#FFFFFF" intensity="1" position="0 3.8 0" angle="90" penumbra="0"></a-light>
     
     <!-- Camera position -->
-    <a-camera position="0 1.6 3" look-controls wasd-controls></a-camera>
+    <a-camera position="0 2 3" look-controls wasd-controls></a-camera>
     
 
     <!-- Sphere -->
@@ -44,7 +44,7 @@
           id="cube1-model"
           gltf-model="./models/Cube.glb"
           position="0 0 0"
-          rotation="0 0 0"
+          rotation="0 180 0"
           scale="1 1 1"
         ></a-entity>
 
