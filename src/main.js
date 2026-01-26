@@ -156,6 +156,30 @@ document.querySelector('a-scene').addEventListener('loaded', () => {
                             console.log("Sol miroir activé");
                         }
 
+                        // -------------------------------------------------
+                        // ÉTAPE 5 : ARRIVÉE DU TRAIT DE LUMIÈRE (T = 8s + 2s = 10s)
+                        // -------------------------------------------------
+                        setTimeout(() => {
+                            
+                            // 1. On récupère les éléments
+                            const pointRouge = document.querySelector('#point-rouge-loin');
+                            const traitLumiere = document.querySelector('#trait-lumiere');
+
+                            // 2. On fait apparaître le point rouge au fond
+                            if (pointRouge) {
+                                pointRouge.setAttribute('visible', 'true');
+                            }
+
+                            // 3. On fait apparaître le trait et on lance son animation
+                            if (traitLumiere) {
+                                traitLumiere.setAttribute('visible', 'true');
+                                // C'est ce 'emit' qui déclenche le mouvement de la gauche vers le centre
+                                traitLumiere.emit('arriver');
+                            }
+                          
+
+                        }, 2000); // Attente de 2 secondes après le Whiteout
+
                     }, 3000); // 3 secondes après le début de la disparition
 
                 }, 2000); // 2 secondes après le changement de couleur

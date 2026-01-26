@@ -53,6 +53,17 @@
     <a-entity id="cube1-model" gltf-model="./models/Cube.glb" position="0 0 0" rotation="0 180 0" scale="1 1 1">
     </a-entity>
 
+    <!-- Pomme -->
+    <a-sphere id="point-rouge-loin" position="0 1.6 -15" radius="0.1" color="#FF0000"
+      material="shader: standard; emissive: #FF0000; emissiveIntensity: 8" visible="false">
+    </a-sphere>
+
+    <!-- Flèche lumineuse -->
+    <a-cylinder id="trait-lumiere" position="-1.5 1.6 -7.3" rotation="90 -10 0" radius="0.02" height="30" color="black"
+      material="shader: standard; emissive: #000000; emissiveIntensity: 1; opacity: 1" visible="false"
+      animation="property: position; to: 0 1.6 -15; dur: 2000; easing: easeOutExpo; startEvents: arriver">
+    </a-cylinder>
+
     <!-- Sol reflet -->
     <a-plane id="sol-miroir" position="0 -0.01 0" rotation="-90 0 0" width="50" height="50" color="#DBF0FF"
       material="shader: standard; roughness: 0; metalness: 0.1; emissive: #666666; emissiveIntensity: 0.5"
