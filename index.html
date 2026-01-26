@@ -14,7 +14,8 @@
     <!-- Lighting -->
     <a-light type="ambient" color="#555555" intensity="0.6"></a-light>
     <a-light type="directional" color="#666666" intensity="0.5" position="5 3 5"></a-light>
-    <a-light type="spot" color="#FFFFFF" intensity="1" position="0 3.8 0" angle="90" penumbra="0"></a-light>
+    <a-light id="lumiere-spot" type="spot" color="#FFFFFF" intensity="1" position="0 3.8 0" angle="90" penumbra="0">
+    </a-light>
 
     <!-- Camera position -->
     <a-camera position="0 2 3" look-controls wasd-controls>
@@ -51,6 +52,12 @@
     <!-- Cube1 GLB Model -->
     <a-entity id="cube1-model" gltf-model="./models/Cube.glb" position="0 0 0" rotation="0 180 0" scale="1 1 1">
     </a-entity>
+
+    <!-- Sol reflet -->
+    <a-plane id="sol-miroir" position="0 -0.01 0" rotation="-90 0 0" width="50" height="50" color="#DBF0FF"
+      material="shader: standard; roughness: 0; metalness: 0.1; emissive: #666666; emissiveIntensity: 0.5"
+      visible="false">
+    </a-plane>
 
     <!-- Ciel -->
     <a-sky color="#000000"></a-sky>

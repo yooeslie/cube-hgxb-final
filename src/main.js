@@ -138,12 +138,23 @@ document.querySelector('a-scene').addEventListener('loaded', () => {
                         // B. Le brouillard devient blanc et envahit tout (near: 0)
                         scene.setAttribute('fog', 'type: linear; color: #FFFFFF; far: 20; near: 0');
 
+                        // 3. EXTINCTION DU SPOT (C'est ici qu'on l'éteint)
+                        const spotLight = document.querySelector('#lumiere-spot');
+                        if (spotLight) {
+                            // On le rend invisible pour supprimer totalement ses ombres
+                            spotLight.setAttribute('visible', 'false');
+                        }
+
                         // C. La lumière cachée s'active à fond pour supprimer les ombres
                         if (grosseLumiere) {
                             grosseLumiere.setAttribute('intensity', '4');
                         }
-
-                        console.log("WHITEOUT FINAL !");
+                        // D. ACTIVATION DU SOL MIROIR
+                        const solMiroir = document.querySelector('#sol-miroir');
+                        if (solMiroir) {
+                            solMiroir.setAttribute('visible', 'true');
+                            console.log("Sol miroir activé");
+                        }
 
                     }, 3000); // 3 secondes après le début de la disparition
 
