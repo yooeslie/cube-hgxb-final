@@ -6,53 +6,59 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>cube-hgxb</title>
-</head>
 
 <body>
+
   <a-scene fog="type: linear; color: #000000; far: 10; near: 0.1">
+
     <!-- Lighting -->
     <a-light type="ambient" color="#555555" intensity="0.6"></a-light>
     <a-light type="directional" color="#666666" intensity="0.5" position="5 3 5"></a-light>
     <a-light type="spot" color="#FFFFFF" intensity="1" position="0 3.8 0" angle="90" penumbra="0"></a-light>
-    
+
     <!-- Camera position -->
-    <a-camera position="0 2 3" look-controls wasd-controls></a-camera>
-    
+    <a-camera position="0 2 3" look-controls wasd-controls>
+      <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable">
+      </a-entity>
+    </a-camera>
+
 
     <!-- Sphere -->
-    <a-sphere position="0 1.45 0" radius="0.4" color="#87CEEB" opacity="0.2"></a-sphere>
-    <a-entity position="0 1.45 0" geometry="primitive: sphere; radius: 0.37; phiLength: 180" material="color: #FFFFFF" rotation="90 0 0"></a-entity>
+    <a-sphere id="sphere-bouton" class="clickable" position="0 1.45 0" radius="0.4" color="#87CEEB"
+      opacity="0.2"></a-sphere>
+    <a-entity position="0 1.45 0" geometry="primitive: sphere; radius: 0.37; phiLength: 180" material="color: #FFFFFF"
+      rotation="90 0 0"></a-entity>
     <a-cylinder position="0 1.44564 0" radius="0.37" height="0.01" color="#FFFFFF"></a-cylinder>
-    
+
     <!-- Bulletins -->
-    <a-box position="0 1.45 0" width="0.01" height="0.1" depth="0.15" color="#FF0000" rotation="0 30 90"></a-box>
+    <a-box id="bulletin-rouge" position="0 1.45 0" width="0.01" height="0.1" depth="0.15" color="#FF0000"
+      material="emissive: #FF0000; emissiveIntensity: 0" rotation="0 30 90"
+      animation="property: position; to: 0 2 0; dur: 1000; easing: easeOutQuad; startEvents: monter">
+
+      <a-light type="point" color="#FF0000" intensity="0" distance="2" decay="2"></a-light>
+    </a-box>
     <a-box position="-0.13 1.45 0.075" width="0.01" height="0.1" depth="0.15" color="#FFFFFF" rotation="0 0 90"></a-box>
-    <a-box position="0.13 1.45 0.075" width="0.01" height="0.1" depth="0.15" color="#FFFFFF" rotation="0 170 90"></a-box>
-    <a-box position="-0.10364 1.45 -0.12471" width="0.01" height="0.1" depth="0.15" color="#FFFFFF" rotation="0 30 90"></a-box>
-    <a-box position="0.13 1.45 -0.12003" width="0.01" height="0.1" depth="0.15" color="#FFFFFF" rotation="0 250   90"></a-box>
-    
+    <a-box position="0.13 1.45 0.075" width="0.01" height="0.1" depth="0.15" color="#FFFFFF"
+      rotation="0 170 90"></a-box>
+    <a-box position="-0.10364 1.45 -0.12471" width="0.01" height="0.1" depth="0.15" color="#FFFFFF"
+      rotation="0 30 90"></a-box>
+    <a-box position="0.13 1.45 -0.12003" width="0.01" height="0.1" depth="0.15" color="#FFFFFF"
+      rotation="0 250   90"></a-box>
+
     <!-- Table GLB Model -->
-    <a-entity
-          gltf-model="./models/table.glb"
-          position="0 0 0"
-          rotation="0 0 0"
-          scale="0.3 0.3 0.3"
-        ></a-entity>
+    <a-entity gltf-model="./models/table.glb" position="0 0 0" rotation="0 0 0" scale="0.3 0.3 0.3"></a-entity>
 
     <!-- Cube1 GLB Model -->
-    <a-entity
-          id="cube1-model"
-          gltf-model="./models/Cube.glb"
-          position="0 0 0"
-          rotation="0 180 0"
-          scale="1 1 1"
-        ></a-entity>
+    <a-entity id="cube1-model" gltf-model="./models/Cube.glb" position="0 0 0" rotation="0 180 0" scale="1 1 1">
+    </a-entity>
 
     <!-- Ciel -->
     <a-sky color="#000000"></a-sky>
 
+    <a-light id="lumiere-forte" type="ambient" color="#FFFFFF" intensity="0"></a-light>
+
   </a-scene>
-<script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 
 </html>
