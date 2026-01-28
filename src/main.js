@@ -28,32 +28,35 @@ cube1Entity.addEventListener("model-loaded", () => {
   }
 });
 
+// =========================================================
+// 2. SCÉNARIO INTERACTIF
+// =========================================================
 document.querySelector('a-scene').addEventListener('loaded', () => {
     
-    // Sélection des éléments de la scène
+    // Sélection des objets
     const bouton = document.querySelector('#sphere-bouton');
     const bulletin = document.querySelector('#bulletin-rouge');
-    const cube = document.querySelector('#cube1-model');
+    
+    const cubeOriginal = document.querySelector('#cube1-model'); // Mur Béton
+    const fissuresMur = document.querySelector('#fissures-mur'); // Mur Fissures
+    
+    // Éléments d'ambiance finale
     const sky = document.querySelector('a-sky');
     const scene = document.querySelector('a-scene');
     const grosseLumiere = document.querySelector('#lumiere-forte');
+    const spotLight = document.querySelector('#lumiere-spot');
+    const solMiroir = document.querySelector('#sol-miroir');
+    const pointRouge = document.querySelector('#point-rouge-loin');
+    const traitLumiere = document.querySelector('#trait-lumiere');
 
     bouton.addEventListener('click', () => {
-        
-        console.log("--- DÉBUT DE LA SÉQUENCE ---");
+        console.log("--- START SCÉNARIO ---");
 
         // -------------------------------------------------
-        // ÉTAPE 1 : IMMÉDIAT (T = 0s)
-        // Le bulletin monte et s'allume
+        // ÉTAPE 1 : IMMÉDIAT (Bulletin monte + brille)
         // -------------------------------------------------
-        
-        // A. Lance l'animation de position
         bulletin.emit('monter');
-
-        // B. Rend le bulletin fluorescent (néon)
         bulletin.setAttribute('material', 'emissiveIntensity', '2.0');
-
-        // C. Allume la lumière rouge attachée au bulletin (pour éclairer la table)
         const lumiereBulletin = bulletin.querySelector('a-light');
         if (lumiereBulletin) {
             lumiereBulletin.setAttribute('intensity', '1.5');
@@ -61,129 +64,105 @@ document.querySelector('a-scene').addEventListener('loaded', () => {
 
 
         // -------------------------------------------------
-        // ÉTAPE 2 : CHANGEMENT DES MURS (T = 3s)
+        // ÉTAPE 2 : APPARITION DES FISSURES (T = 3s)
         // -------------------------------------------------
         setTimeout(() => {
-            const mesh = cube.getObject3D('mesh');
-            
-            if (mesh) {
-                const murs = []; // Liste pour stocker les morceaux de mur
+            if (fissuresMur) {
+                // 1. On rend les fissures visibles
+                fissuresMur.setAttribute('material', 'opacity', '1');
+                console.log("Fissures !");
 
-                // On transforme le mur en néon orange
-                mesh.traverse((node) => {
-                    if (node.isMesh) {
-                        node.material.map = null;              // Enlève le béton
-                        node.material.color.set("#750303");    // Couleur Orange
-                        node.material.emissive.set("#750303"); // Lumière Orange
-                        node.material.transparent = true;      // Prépare la transparence
-                        node.material.opacity = 1.0;
-                        node.material.needsUpdate = true;
-                        
-                        murs.push(node);
-                    }
-                });
-
-                // Lancement de l'effet stroboscopique (Flashs)
-                // Toutes les 100ms, l'intensité change
+                // 2. Clignotement des fissures (Effet lave instable)
                 const flashInterval = setInterval(() => {
-                    const intensite = 1.0 + Math.random() * 0.8; // Entre 1.0 et 1.8
-                    murs.forEach(node => {
-                        // On ne flash que si le mur est encore visible
-                        if(node.material.opacity > 0) {
-                            node.material.emissiveIntensity = intensite;
-                        }
-                    });
-                }, 100);
-
-                console.log("Murs activés : Orange + Flashs");
+                    const intensite = 2.0 + Math.random() * 2.0; 
+                    let currentOpacity = parseFloat(fissuresMur.getAttribute('material').opacity);
+                    
+                    if(currentOpacity > 0) {
+                         fissuresMur.setAttribute('material', 'emissiveIntensity', intensite);
+                    }
+                }, 80);
 
                 // -------------------------------------------------
-                // ÉTAPE 3 : DISPARITION (T = 3s + 2s = 5s)
+                // ÉTAPE 3 : DISPARITION / FONDU (T = 5s)
                 // -------------------------------------------------
                 setTimeout(() => {
-                    console.log("Début du fondu de disparition...");
+                    console.log("Fondu de disparition...");
 
-                    // Boucle pour réduire l'opacité progressivement
-                    const fadeInterval = setInterval(() => {
-                        let isFinished = false;
-
-                        murs.forEach(node => {
-                            node.material.opacity -= 0.02; // Vitesse de disparition
-
-                            if (node.material.opacity <= 0) {
-                                node.material.opacity = 0;
-                                isFinished = true;
+                    // Préparation du mur original pour la transparence
+                    const meshOriginal = cubeOriginal.getObject3D('mesh');
+                    if(meshOriginal) {
+                        meshOriginal.traverse(node => {
+                            if(node.isMesh) {
+                                node.material.transparent = true;
+                                node.material.opacity = 1;
                             }
                         });
+                    }
 
-                        // Si totalement invisible, on nettoie
-                        if (isFinished) {
-                            clearInterval(fadeInterval);  // Stop le fondu
-                            clearInterval(flashInterval); // Stop les flashs
-                            cube.setAttribute('visible', 'false'); // Cache l'objet
-                            console.log("Murs disparus.");
+                    let opaciteCourante = 1.0;
+
+                    const fadeInterval = setInterval(() => {
+                        opaciteCourante -= 0.05; // Vitesse
+
+                        if (opaciteCourante <= 0) {
+                            // FIN DU FONDU
+                            opaciteCourante = 0;
+                            clearInterval(fadeInterval);
+                            clearInterval(flashInterval);
+                            
+                            // On cache physiquement les murs
+                            cubeOriginal.setAttribute('visible', 'false');
+                            fissuresMur.setAttribute('visible', 'false');
+                        } else {
+                            // PENDANT LE FONDU : On réduit l'opacité des deux murs
+                            fissuresMur.setAttribute('material', 'opacity', opaciteCourante);
+                            if(meshOriginal) {
+                                meshOriginal.traverse(node => { if(node.isMesh) node.material.opacity = opaciteCourante; });
+                            }
                         }
-
-                    }, 50); // Mise à jour toutes les 50ms
-
+                    }, 50);
 
                     // -------------------------------------------------
-                    // ÉTAPE 4 : FLASH BLANC / WHITEOUT (T = 5s + 3s = 8s)
+                    // ÉTAPE 4 : WHITEOUT BLEUTÉ (T = 8s)
                     // -------------------------------------------------
                     setTimeout(() => {
-                        
-                        // A. Le ciel devient blanc
-                        sky.setAttribute('color', '#FFFFFF');
+                        const couleurBleutee = '#DBF0FF';
 
-                        // B. Le brouillard devient blanc et envahit tout (near: 0)
-                        scene.setAttribute('fog', 'type: linear; color: #FFFFFF; far: 20; near: 0');
+                        // Ambiance
+                        sky.setAttribute('color', couleurBleutee);
+                        scene.setAttribute('fog', `type: linear; color: ${couleurBleutee}; far: 25; near: 1`);
 
-                        // 3. EXTINCTION DU SPOT (C'est ici qu'on l'éteint)
-                        const spotLight = document.querySelector('#lumiere-spot');
-                        if (spotLight) {
-                            // On le rend invisible pour supprimer totalement ses ombres
-                            spotLight.setAttribute('visible', 'false');
-                        }
+                        // Lumières
+                        if (grosseLumiere) grosseLumiere.setAttribute('intensity', '4');
+                        if (spotLight) spotLight.setAttribute('visible', 'false'); // On coupe le spot
 
-                        // C. La lumière cachée s'active à fond pour supprimer les ombres
-                        if (grosseLumiere) {
-                            grosseLumiere.setAttribute('intensity', '4');
-                        }
-                        // D. ACTIVATION DU SOL MIROIR
-                        const solMiroir = document.querySelector('#sol-miroir');
-                        if (solMiroir) {
-                            solMiroir.setAttribute('visible', 'true');
-                            console.log("Sol miroir activé");
-                        }
+                        // Sol Miroir
+                        if (solMiroir) solMiroir.setAttribute('visible', 'true');
+
+                        console.log("WHITEOUT FINAL !");
 
                         // -------------------------------------------------
-                        // ÉTAPE 5 : ARRIVÉE DU TRAIT DE LUMIÈRE (T = 8s + 2s = 10s)
+                        // ÉTAPE 5 : TRAIT DE LUMIÈRE (T = 10s)
                         // -------------------------------------------------
                         setTimeout(() => {
                             
-                            // 1. On récupère les éléments
-                            const pointRouge = document.querySelector('#point-rouge-loin');
-                            const traitLumiere = document.querySelector('#trait-lumiere');
+                            // 1. Point rouge au fond
+                            if (pointRouge) pointRouge.setAttribute('visible', 'true');
 
-                            // 2. On fait apparaître le point rouge au fond
-                            if (pointRouge) {
-                                pointRouge.setAttribute('visible', 'true');
-                            }
-
-                            // 3. On fait apparaître le trait et on lance son animation
+                            // 2. Trait de lumière
                             if (traitLumiere) {
                                 traitLumiere.setAttribute('visible', 'true');
-                                // C'est ce 'emit' qui déclenche le mouvement de la gauche vers le centre
                                 traitLumiere.emit('arriver');
                             }
-                          
+                            
+                            console.log("Animation finale terminée.");
 
-                        }, 2000); // Attente de 2 secondes après le Whiteout
+                        }, 2000); // +2s après whiteout
 
-                    }, 3000); // 3 secondes après le début de la disparition
+                    }, 3000); // +3s après début fondu
 
-                }, 2000); // 2 secondes après le changement de couleur
+                }, 2000); // +2s après fissures
             }
-        }, 3000); // 3 secondes après le clic initial
+        }, 3000); // +3s après clic
     });
 });

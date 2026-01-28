@@ -17,11 +17,23 @@
     <a-light id="lumiere-spot" type="spot" color="#FFFFFF" intensity="1" position="0 3.8 0" angle="90" penumbra="0">
     </a-light>
 
-    <!-- Camera position -->
-    <a-camera position="0 2 3" look-controls wasd-controls>
-      <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable">
+    <!-- Camera et Manettes -->
+    <a-entity id="rig" position="0 0 0">
+
+      <a-camera position="0 2 3" look-controls wasd-controls>
+        <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable">
+        </a-entity>
+      </a-camera>
+
+      <a-entity laser-controls="hand: left" raycaster="objects: .clickable; far: 5; showLine: true"
+        line="color: red; opacity: 0.75">
       </a-entity>
-    </a-camera>
+
+      <a-entity laser-controls="hand: right" raycaster="objects: .clickable; far: 5; showLine: true"
+        line="color: red; opacity: 0.75">
+      </a-entity>
+
+    </a-entity>
 
 
     <!-- Sphere -->
@@ -52,6 +64,17 @@
     <!-- Cube1 GLB Model -->
     <a-entity id="cube1-model" gltf-model="./models/Cube.glb" position="0 0 0" rotation="0 180 0" scale="1 1 1">
     </a-entity>
+
+    <!-- Fissures -->
+    <a-box id="fissures-mur" position="0 4 0" rotation="0 0 0" scale="8 8 8" material="shader: standard;
+                 transparent: true;
+                 opacity: 0;
+                 alphaMap: url(https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Texture-cracked-ground-bw.jpg/800px-Texture-cracked-ground-bw.jpg);
+                 color: #ff4500;
+                 emissive: #ff4500;
+                 emissiveIntensity: 3;
+                 side: double">
+    </a-box>
 
     <!-- Pomme -->
     <a-sphere id="point-rouge-loin" position="0 1.6 -15" radius="0.1" color="#FF0000"
